@@ -856,7 +856,7 @@ jQuery(document).ready(function($) {
             const isComposite = (this.currentItem.type || '').toLowerCase() === 'composite-doors';
             if (isComposite) {
                 $('.outside-colour-label').text('Door Colour (External)');
-                $('.inside-colour-label').text('Frame Colour');
+                $('.inside-colour-label').text('Frame Colour (External)');
                 $('.composite-inside-note').show();
             } else {
                 $('.outside-colour-label').text('Outside Colour');
@@ -2008,7 +2008,7 @@ jQuery(document).ready(function($) {
 
             if ((item.type || '').toLowerCase() === 'composite-doors') {
                 fields.push({ label: 'Door Colour (External)', value: outsideColourDisplay, field: 'colour' });
-                fields.push({ label: 'Frame Colour', value: insideColourDisplay, field: 'colour' });
+                fields.push({ label: 'Frame Colour (External)', value: insideColourDisplay, field: 'colour' });
                 fields.push({ label: 'Inside Colour', value: 'White', field: 'colour', readonly: true });
             } else {
                 fields.push({ label: 'Colours', value: outsideColourDisplay + ' / ' + insideColourDisplay, field: 'colour' });
@@ -2193,7 +2193,7 @@ jQuery(document).ready(function($) {
                     '</div>');
 
                 // Create inside colour picker
-                const insideLabel = isCompositeModal ? 'Frame Colour' : (isAluminium && this.modalAluminiumType === 'stock' ? 'Select Colour' : 'Inside Colour');
+                const insideLabel = isCompositeModal ? 'Frame Colour (External)' : (isAluminium && this.modalAluminiumType === 'stock' ? 'Select Colour' : 'Inside Colour');
 
                 $content.append('<div class="edit-field-group modal-colour-picker">' +
                     '<label id="modal-inside-colour-label">' + insideLabel + ':</label>' +

@@ -943,7 +943,7 @@ $additional_documents_note = $qf_get_opt('proposal_additional_documents_note');
                 <?php endif; ?>
                 <?php if (!empty($item['inside_colour'])): ?>
                 <div class="item-detail-row">
-                    <span class="item-detail-label">Frame Colour:</span>
+                    <span class="item-detail-label">Frame Colour (External):</span>
                     <span class="item-detail-value"><?php echo esc_html($item['inside_colour']); ?></span>
                 </div>
                 <?php endif; ?>

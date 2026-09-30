@@ -2077,7 +2077,7 @@ class Quotation_Form_Plugin {
 
             if (($item['type'] ?? '') === 'composite-doors') {
                 $message .= "Door Colour (External): " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
-                $message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                $message .= "Frame Colour (External): " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
                 $message .= "Inside Colour: White\n";
             } else {
                 $message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
@@ -2194,7 +2194,7 @@ class Quotation_Form_Plugin {
 
                 if (($item['type'] ?? '') === 'composite-doors') {
                     $customer_message .= "Door Colour (External): " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
-                    $customer_message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                    $customer_message .= "Frame Colour (External): " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
                     $customer_message .= "Inside Colour: White\n";
                 } else {
                     $customer_message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
