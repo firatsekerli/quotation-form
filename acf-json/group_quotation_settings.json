@@ -311,6 +311,19 @@
                     "default_value": "Colour"
                 },
                 {
+                    "key": "field_colour_applies_to",
+                    "label": "Applies To",
+                    "name": "applies_to",
+                    "type": "select",
+                    "instructions": "For Composite Doors: is this a door (slab) colour or a frame colour? Leave blank for general window colours.",
+                    "choices": {
+                        "Door": "Door",
+                        "Frame": "Frame"
+                    },
+                    "allow_null": 1,
+                    "ui": 1
+                },
+                {
                     "key": "field_colour_finish_type",
                     "label": "Finish Type",
                     "name": "finish_type",
@@ -1083,5 +1096,5 @@
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
-    "modified": 1785524541
+    "modified": 1790762240
 }
