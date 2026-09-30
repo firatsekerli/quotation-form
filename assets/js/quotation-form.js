@@ -3026,7 +3026,13 @@ jQuery(document).ready(function($) {
                 // Use display names with finish types if available, otherwise fall back to colour values
                 const insideColourDisplay = item.insideColourName || item.insideColour;
                 const outsideColourDisplay = item.outsideColourName || item.outsideColour;
-                $itemSummary.append('<p><strong>Colours:</strong> ' + outsideColourDisplay + ' / ' + insideColourDisplay + '</p>');
+                if ((item.type || '').toLowerCase() === 'composite-doors') {
+                    $itemSummary.append('<p><strong>Door Colour (External):</strong> ' + outsideColourDisplay + '</p>');
+                    $itemSummary.append('<p><strong>Frame Colour (External):</strong> ' + insideColourDisplay + '</p>');
+                    $itemSummary.append('<p><strong>Inside Colour:</strong> White</p>');
+                } else {
+                    $itemSummary.append('<p><strong>Colours:</strong> ' + outsideColourDisplay + ' / ' + insideColourDisplay + '</p>');
+                }
 
                 if (item.location) {
                     $itemSummary.append('<p><strong>Location:</strong> ' + item.location + '</p>');
