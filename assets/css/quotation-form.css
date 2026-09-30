@@ -333,6 +333,12 @@
     object-fit: contain;
 }
 
+/* Composite Doors: show the whole door image (contain), not cropped */
+.image-card[data-type="composite-doors"] .card-image img,
+.image-card[data-available-types*="composite-doors"] .card-image img {
+    object-fit: contain;
+}
+
 .image-card h3 {
     margin: 0;
     font-size: 18px;
