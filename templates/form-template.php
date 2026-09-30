@@ -35,6 +35,11 @@ $bay_types = array();
 
 if (!empty($product_types) && is_array($product_types)) {
     foreach ($product_types as $type) {
+        // Skip types turned off in settings (missing value = on, backward compatible)
+        $enabled = isset($type['enabled']) ? $type['enabled'] : 1;
+        if ($enabled === 0 || $enabled === '0' || $enabled === false) {
+            continue;
+        }
         $category = isset($type['category']) ? $type['category'] : 'windows';
         if ($category === 'windows') {
             $window_types[] = $type;

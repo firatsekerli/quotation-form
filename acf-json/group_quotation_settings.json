@@ -96,6 +96,15 @@
                     "type": "image",
                     "return_format": "array",
                     "preview_size": "thumbnail"
+                },
+                {
+                    "key": "field_type_enabled",
+                    "label": "Show on Front End",
+                    "name": "enabled",
+                    "type": "true_false",
+                    "instructions": "Turn off to hide this type from the front-end form without deleting it.",
+                    "default_value": 1,
+                    "ui": 1
                 }
             ]
         },
@@ -1096,5 +1105,5 @@
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
-    "modified": 1790762240
+    "modified": 1790762724
 }

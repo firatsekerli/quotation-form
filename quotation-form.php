@@ -1150,6 +1150,15 @@ class Quotation_Form_Plugin {
 
         // Get ACF config data (with fallbacks to hardcoded defaults)
         $product_types = $this->get_acf_field_or_default('product_types', 'option');
+
+        // Hide types turned off in settings (missing value = on, backward compatible)
+        if (is_array($product_types)) {
+            $product_types = array_values(array_filter($product_types, function($type) {
+                $enabled = isset($type['enabled']) ? $type['enabled'] : 1;
+                return !($enabled === 0 || $enabled === '0' || $enabled === false);
+            }));
+        }
+
         $materials = $this->get_acf_field_or_default('materials', 'option');
         $styles = $this->get_acf_field_or_default('styles', 'option');
 
