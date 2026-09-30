@@ -852,6 +852,18 @@ jQuery(document).ready(function($) {
         },
 
         initializeColourPickers: function() {
+            // Composite Doors relabel the two grids to Door / Frame and fix inside to White.
+            const isComposite = (this.currentItem.type || '').toLowerCase() === 'composite-doors';
+            if (isComposite) {
+                $('.outside-colour-label').text('Door Colour');
+                $('.inside-colour-label').text('Frame Colour');
+                $('.composite-inside-note').show();
+            } else {
+                $('.outside-colour-label').text('Outside Colour');
+                $('.inside-colour-label').text('Inside Colour');
+                $('.composite-inside-note').hide();
+            }
+
             this.renderColourGrid('inside-colour-grid');
             this.renderColourGrid('outside-colour-grid');
 
@@ -869,7 +881,17 @@ jQuery(document).ready(function($) {
 
             // Filter colours by selected material (use material slug for comparison)
             const selectedMaterial = this.currentItem.material || '';
-            const filteredColours = this.filterColoursByMaterial(selectedMaterial);
+            let filteredColours = this.filterColoursByMaterial(selectedMaterial);
+
+            // Composite Doors: outside grid = Door colours, inside grid = Frame colours.
+            // All other products: exclude Door/Frame colours (composite-only) from the picker.
+            const isComposite = (this.currentItem.type || '').toLowerCase() === 'composite-doors';
+            if (isComposite) {
+                const wantApplies = isInside ? 'Frame' : 'Door';
+                filteredColours = filteredColours.filter(c => (c.applies_to || '') === wantApplies);
+            } else {
+                filteredColours = filteredColours.filter(c => !c.applies_to);
+            }
 
             // Group by category
             const categories = {};
@@ -1984,7 +2006,13 @@ jQuery(document).ready(function($) {
                 fields.push({ label: 'Segment Widths', value: segmentDisplay, field: 'size' });
             }
 
-            fields.push({ label: 'Colours', value: outsideColourDisplay + ' / ' + insideColourDisplay, field: 'colour' });
+            if ((item.type || '').toLowerCase() === 'composite-doors') {
+                fields.push({ label: 'Door Colour', value: outsideColourDisplay, field: 'colour' });
+                fields.push({ label: 'Frame Colour', value: insideColourDisplay, field: 'colour' });
+                fields.push({ label: 'Inside Colour', value: 'White', field: 'colour' });
+            } else {
+                fields.push({ label: 'Colours', value: outsideColourDisplay + ' / ' + insideColourDisplay, field: 'colour' });
+            }
 
             // Only show Glazing Type if it exists (some styles hide this field)
             if (item.glazingType || item.glazingTypeName) {
@@ -2153,7 +2181,8 @@ jQuery(document).ready(function($) {
                 }
 
                 // Create outside colour picker (hide for aluminium stock)
-                const outsideLabel = 'Outside Colour';
+                const isCompositeModal = (item.type || '').toLowerCase() === 'composite-doors';
+                const outsideLabel = isCompositeModal ? 'Door Colour' : 'Outside Colour';
                 const outsideDisplay = isAluminium && this.modalAluminiumType === 'stock' ? 'style="display:none;"' : '';
 
                 $content.append('<div class="edit-field-group modal-colour-picker" id="modal-outside-colour-picker" ' + outsideDisplay + '>' +
@@ -2164,7 +2193,7 @@ jQuery(document).ready(function($) {
                     '</div>');
 
                 // Create inside colour picker
-                const insideLabel = isAluminium && this.modalAluminiumType === 'stock' ? 'Select Colour' : 'Inside Colour';
+                const insideLabel = isCompositeModal ? 'Frame Colour' : (isAluminium && this.modalAluminiumType === 'stock' ? 'Select Colour' : 'Inside Colour');
 
                 $content.append('<div class="edit-field-group modal-colour-picker">' +
                     '<label id="modal-inside-colour-label">' + insideLabel + ':</label>' +
@@ -2172,6 +2201,10 @@ jQuery(document).ready(function($) {
                     '<input type="text" id="modal-inside-colour-search" class="modal-colour-search" placeholder="Search colours...">' +
                     '<div id="modal-inside-colour-grid" class="colour-grid modal-colour-grid"></div>' +
                     '</div>');
+
+                if (isCompositeModal) {
+                    $content.append('<div class="edit-field-group"><label>Inside Colour:</label> <strong>White</strong></div>');
+                }
 
                 // Handle aluminium type selection
                 if (isAluminium) {
@@ -2385,6 +2418,16 @@ jQuery(document).ready(function($) {
 
             // Filter colours by material and type (use modal item type for proper filtering)
             let filteredColours = material ? this.filterColoursByMaterialAndType(material, this.modalItemType) : this.colours;
+
+            // Composite Doors: outside grid = Door colours, inside grid = Frame colours.
+            // All other products: exclude Door/Frame colours (composite-only) from the picker.
+            const isCompositeModalGrid = (this.modalItemType || '').toLowerCase() === 'composite-doors';
+            if (isCompositeModalGrid) {
+                const wantApplies = isInside ? 'Frame' : 'Door';
+                filteredColours = filteredColours.filter(c => (c.applies_to || '') === wantApplies);
+            } else {
+                filteredColours = filteredColours.filter(c => !c.applies_to);
+            }
 
             // Check if aluminium material
             const isAluminium = material && (material.toLowerCase().includes('aluminium') || material.toLowerCase().includes('aluminum'));

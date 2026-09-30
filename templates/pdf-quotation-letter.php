@@ -934,18 +934,37 @@ $additional_documents_note = $qf_get_opt('proposal_additional_documents_note');
             </div>
             <?php endif; ?>
 
-            <?php if (!empty($item['outside_colour'])): ?>
-            <div class="item-detail-row">
-                <span class="item-detail-label">Outside Colour:</span>
-                <span class="item-detail-value"><?php echo esc_html($item['outside_colour']); ?></span>
-            </div>
-            <?php endif; ?>
+            <?php if (($item['type_name'] ?? '') === 'composite-doors'): ?>
+                <?php if (!empty($item['outside_colour'])): ?>
+                <div class="item-detail-row">
+                    <span class="item-detail-label">Door Colour:</span>
+                    <span class="item-detail-value"><?php echo esc_html($item['outside_colour']); ?></span>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($item['inside_colour'])): ?>
+                <div class="item-detail-row">
+                    <span class="item-detail-label">Frame Colour:</span>
+                    <span class="item-detail-value"><?php echo esc_html($item['inside_colour']); ?></span>
+                </div>
+                <?php endif; ?>
+                <div class="item-detail-row">
+                    <span class="item-detail-label">Inside Colour:</span>
+                    <span class="item-detail-value">White</span>
+                </div>
+            <?php else: ?>
+                <?php if (!empty($item['outside_colour'])): ?>
+                <div class="item-detail-row">
+                    <span class="item-detail-label">Outside Colour:</span>
+                    <span class="item-detail-value"><?php echo esc_html($item['outside_colour']); ?></span>
+                </div>
+                <?php endif; ?>
 
-            <?php if (!empty($item['inside_colour'])): ?>
-            <div class="item-detail-row">
-                <span class="item-detail-label">Inside Colour:</span>
-                <span class="item-detail-value"><?php echo esc_html($item['inside_colour']); ?></span>
-            </div>
+                <?php if (!empty($item['inside_colour'])): ?>
+                <div class="item-detail-row">
+                    <span class="item-detail-label">Inside Colour:</span>
+                    <span class="item-detail-value"><?php echo esc_html($item['inside_colour']); ?></span>
+                </div>
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php if (!empty($item['glazing_type']) && !$hide_glazing): ?>

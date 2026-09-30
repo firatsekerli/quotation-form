@@ -438,6 +438,8 @@ if (!$use_acf) {
                                 <p class="colour-selection-display">You have chosen: <strong id="inside-colour-name">None</strong></p>
                             </div>
                         </div>
+
+                        <p class="composite-inside-note" style="display:none;">Inside Colour: <strong>White</strong></p>
                     </div>
 
                     <div class="form-group">

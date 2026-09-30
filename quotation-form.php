@@ -1254,6 +1254,7 @@ class Quotation_Form_Plugin {
                 'hex' => isset($colour['hex']) ? $colour['hex'] : '#FFFFFF',
                 'finish_type' => isset($colour['finish_type']) ? $colour['finish_type'] : null,
                 'available_materials' => isset($colour['available_materials']) ? $colour['available_materials'] : array(),
+                'applies_to' => isset($colour['applies_to']) ? $colour['applies_to'] : '',
                 'finish_exclusions' => isset($colour['finish_exclusions']) ? $colour['finish_exclusions'] : array()
             );
 
@@ -2074,8 +2075,14 @@ class Quotation_Form_Plugin {
                 $message .= "Infill Panel: " . $item['infillPanel'] . "\n";
             }
 
-            $message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
-            $message .= "Inside Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+            if (($item['type'] ?? '') === 'composite-doors') {
+                $message .= "Door Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                $message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                $message .= "Inside Colour: White\n";
+            } else {
+                $message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                $message .= "Inside Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+            }
 
             // Check if glazing should be hidden for this style
             $hide_glazing = false;
@@ -2185,8 +2192,14 @@ class Quotation_Form_Plugin {
                     $customer_message .= "Infill Panel: " . $item['infillPanel'] . "\n";
                 }
 
-                $customer_message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
-                $customer_message .= "Inside Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                if (($item['type'] ?? '') === 'composite-doors') {
+                    $customer_message .= "Door Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                    $customer_message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                    $customer_message .= "Inside Colour: White\n";
+                } else {
+                    $customer_message .= "Outside Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                    $customer_message .= "Inside Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
+                }
 
                 // Check if glazing should be hidden for this style
                 $hide_glazing = false;
