@@ -333,8 +333,8 @@
     object-fit: contain;
 }
 
-/* Composite Doors: show the whole door image (contain), not cropped */
-.image-card[data-type="composite-doors"] .card-image img,
+/* Composite Doors: show the whole door image (contain) on material cards,
+   not cropped. The type-selection card keeps the default cover. */
 .image-card[data-available-types*="composite-doors"] .card-image img {
     object-fit: contain;
 }
