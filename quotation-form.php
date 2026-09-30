@@ -2076,7 +2076,7 @@ class Quotation_Form_Plugin {
             }
 
             if (($item['type'] ?? '') === 'composite-doors') {
-                $message .= "Door Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                $message .= "Door Colour (External): " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
                 $message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
                 $message .= "Inside Colour: White\n";
             } else {
@@ -2193,7 +2193,7 @@ class Quotation_Form_Plugin {
                 }
 
                 if (($item['type'] ?? '') === 'composite-doors') {
-                    $customer_message .= "Door Colour: " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
+                    $customer_message .= "Door Colour (External): " . ($item['outsideColourName'] ?? $item['outsideColour'] ?? '') . "\n";
                     $customer_message .= "Frame Colour: " . ($item['insideColourName'] ?? $item['insideColour'] ?? '') . "\n";
                     $customer_message .= "Inside Colour: White\n";
                 } else {

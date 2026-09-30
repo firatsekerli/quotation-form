@@ -937,7 +937,7 @@ $additional_documents_note = $qf_get_opt('proposal_additional_documents_note');
             <?php if (($item['type_name'] ?? '') === 'composite-doors'): ?>
                 <?php if (!empty($item['outside_colour'])): ?>
                 <div class="item-detail-row">
-                    <span class="item-detail-label">Door Colour:</span>
+                    <span class="item-detail-label">Door Colour (External):</span>
                     <span class="item-detail-value"><?php echo esc_html($item['outside_colour']); ?></span>
                 </div>
                 <?php endif; ?>

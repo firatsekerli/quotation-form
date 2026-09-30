@@ -855,7 +855,7 @@ jQuery(document).ready(function($) {
             // Composite Doors relabel the two grids to Door / Frame and fix inside to White.
             const isComposite = (this.currentItem.type || '').toLowerCase() === 'composite-doors';
             if (isComposite) {
-                $('.outside-colour-label').text('Door Colour');
+                $('.outside-colour-label').text('Door Colour (External)');
                 $('.inside-colour-label').text('Frame Colour');
                 $('.composite-inside-note').show();
             } else {
@@ -2007,9 +2007,9 @@ jQuery(document).ready(function($) {
             }
 
             if ((item.type || '').toLowerCase() === 'composite-doors') {
-                fields.push({ label: 'Door Colour', value: outsideColourDisplay, field: 'colour' });
+                fields.push({ label: 'Door Colour (External)', value: outsideColourDisplay, field: 'colour' });
                 fields.push({ label: 'Frame Colour', value: insideColourDisplay, field: 'colour' });
-                fields.push({ label: 'Inside Colour', value: 'White', field: 'colour' });
+                fields.push({ label: 'Inside Colour', value: 'White', field: 'colour', readonly: true });
             } else {
                 fields.push({ label: 'Colours', value: outsideColourDisplay + ' / ' + insideColourDisplay, field: 'colour' });
             }
@@ -2052,8 +2052,8 @@ jQuery(document).ready(function($) {
                 const $row = $('<tr></tr>');
                 $row.append('<td><strong>' + field.label + ':</strong></td>');
 
-                // Product field is not editable, so don't add click handler
-                if (field.field === 'product') {
+                // Product field (and fixed read-only fields) are not editable
+                if (field.field === 'product' || field.readonly) {
                     const $valueCell = $('<td>' + field.value + '</td>');
                     $row.append($valueCell);
                 } else {
@@ -2182,7 +2182,7 @@ jQuery(document).ready(function($) {
 
                 // Create outside colour picker (hide for aluminium stock)
                 const isCompositeModal = (item.type || '').toLowerCase() === 'composite-doors';
-                const outsideLabel = isCompositeModal ? 'Door Colour' : 'Outside Colour';
+                const outsideLabel = isCompositeModal ? 'Door Colour (External)' : 'Outside Colour';
                 const outsideDisplay = isAluminium && this.modalAluminiumType === 'stock' ? 'style="display:none;"' : '';
 
                 $content.append('<div class="edit-field-group modal-colour-picker" id="modal-outside-colour-picker" ' + outsideDisplay + '>' +
