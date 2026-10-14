@@ -2131,17 +2131,24 @@ class Quotation_Form_Plugin {
         $admin_headers = array('Content-Type: text/html; charset=UTF-8');
         $admin_html_message = '<div style="font-size:18px; line-height:1.5; font-family: Arial, Helvetica, sans-serif;">' . nl2br(esc_html($message)) . '</div>';
 
-        // Attach each item's style image (local uploads only) for the admin copy.
+        // Attach each item's style image (local files only) for the admin copy.
+        // Works for every product type; resolves both Media Library uploads and
+        // plugin-bundled style images.
         $admin_attachments = array();
         $upload_dir = wp_upload_dir();
         if (!empty($basket_items) && is_array($basket_items)) {
             foreach ($basket_items as $bi) {
                 $img_url = isset($bi['styleImage']) ? $bi['styleImage'] : '';
-                if (empty($img_url) || empty($upload_dir['baseurl']) || strpos($img_url, $upload_dir['baseurl']) !== 0) {
+                if (empty($img_url)) {
                     continue;
                 }
-                $img_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $img_url);
-                if (file_exists($img_path) && !in_array($img_path, $admin_attachments, true)) {
+                $img_path = '';
+                if (!empty($upload_dir['baseurl']) && strpos($img_url, $upload_dir['baseurl']) === 0) {
+                    $img_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $img_url);
+                } elseif (defined('QUOTATION_FORM_PLUGIN_URL') && defined('QUOTATION_FORM_PLUGIN_DIR') && strpos($img_url, QUOTATION_FORM_PLUGIN_URL) === 0) {
+                    $img_path = str_replace(QUOTATION_FORM_PLUGIN_URL, QUOTATION_FORM_PLUGIN_DIR, $img_url);
+                }
+                if ($img_path && file_exists($img_path) && !in_array($img_path, $admin_attachments, true)) {
                     $admin_attachments[] = $img_path;
                 }
             }
