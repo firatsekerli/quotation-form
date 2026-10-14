@@ -2130,7 +2130,24 @@ class Quotation_Form_Plugin {
         // line breaks converted so it renders identically at a bigger size.
         $admin_headers = array('Content-Type: text/html; charset=UTF-8');
         $admin_html_message = '<div style="font-size:18px; line-height:1.5; font-family: Arial, Helvetica, sans-serif;">' . nl2br(esc_html($message)) . '</div>';
-        wp_mail($admin_email, $subject, $admin_html_message, $admin_headers);
+
+        // Attach each item's style image (local uploads only) for the admin copy.
+        $admin_attachments = array();
+        $upload_dir = wp_upload_dir();
+        if (!empty($basket_items) && is_array($basket_items)) {
+            foreach ($basket_items as $bi) {
+                $img_url = isset($bi['styleImage']) ? $bi['styleImage'] : '';
+                if (empty($img_url) || empty($upload_dir['baseurl']) || strpos($img_url, $upload_dir['baseurl']) !== 0) {
+                    continue;
+                }
+                $img_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $img_url);
+                if (file_exists($img_path) && !in_array($img_path, $admin_attachments, true)) {
+                    $admin_attachments[] = $img_path;
+                }
+            }
+        }
+
+        wp_mail($admin_email, $subject, $admin_html_message, $admin_headers, $admin_attachments);
 
         // Send confirmation email to customer (if enabled)
         $customer_email = isset($customer_data['email']) ? $customer_data['email'] :
