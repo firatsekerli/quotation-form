@@ -2093,7 +2093,7 @@ class Quotation_Form_Plugin {
                 }
             }
 
-            if (!$hide_glazing) {
+            if (!$hide_glazing && (!empty($item['glazingTypeName']) || !empty($item['glazingType']))) {
                 $message .= "Glazing Type: " . ucfirst($item['glazingTypeName'] ?? $item['glazingType'] ?? '') . "\n";
                 if (!empty($item['glazingPattern'])) {
                     $message .= "Glazing Pattern: " . ucfirst($item['glazingPattern']) . "\n";
@@ -2210,7 +2210,7 @@ class Quotation_Form_Plugin {
                     }
                 }
 
-                if (!$hide_glazing) {
+                if (!$hide_glazing && (!empty($item['glazingTypeName']) || !empty($item['glazingType']))) {
                     $customer_message .= "Glazing Type: " . ucfirst($item['glazingTypeName'] ?? $item['glazingType'] ?? '') . "\n";
                     if (!empty($item['glazingPattern'])) {
                         $customer_message .= "Glazing Pattern: " . ucfirst($item['glazingPattern']) . "\n";

@@ -275,6 +275,15 @@
                     "min": 1,
                     "max": "",
                     "step": 1
+                },
+                {
+                    "key": "field_style_is_solid",
+                    "label": "Solid (no glass)",
+                    "name": "is_solid",
+                    "type": "true_false",
+                    "instructions": "Turn on for solid door styles with no glass. Hides the glazing selection on the form for this style.",
+                    "default_value": 0,
+                    "ui": 1
                 }
             ]
         },
@@ -1105,5 +1114,5 @@
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
-    "modified": 1790762724
+    "modified": 1791971264
 }

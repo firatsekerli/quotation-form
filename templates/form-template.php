@@ -269,13 +269,18 @@ if (!$use_acf) {
                         $available_materials = isset($style['available_materials']) ? $style['available_materials'] : array();
 
                         // Styles that should hide Glazing Type and Glazing Features
-                        // Check if slug matches or contains any of these style numbers
-                        $hide_glazing_styles = array('5001', '5004', '5015', '5025', '5030', '5033', '5401');
+                        // Prefer the per-style "Solid (no glass)" toggle; fall back to the
+                        // legacy style-number list for styles not yet toggled.
                         $hide_glazing = '0';
-                        foreach ($hide_glazing_styles as $style_num) {
-                            if ($slug === $style_num || strpos($slug, $style_num) !== false) {
-                                $hide_glazing = '1';
-                                break;
+                        if (!empty($style['is_solid'])) {
+                            $hide_glazing = '1';
+                        } else {
+                            $hide_glazing_styles = array('5001', '5004', '5015', '5025', '5030', '5033', '5401');
+                            foreach ($hide_glazing_styles as $style_num) {
+                                if ($slug === $style_num || strpos($slug, $style_num) !== false) {
+                                    $hide_glazing = '1';
+                                    break;
+                                }
                             }
                         }
 
