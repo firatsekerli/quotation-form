@@ -2131,10 +2131,12 @@ class Quotation_Form_Plugin {
         $admin_headers = array('Content-Type: text/html; charset=UTF-8');
         $admin_html_message = '<div style="font-size:18px; line-height:1.5; font-family: Arial, Helvetica, sans-serif;">' . nl2br(esc_html($message)) . '</div>';
 
-        // Attach each item's style image (local files only) for the admin copy.
-        // Works for every product type; resolves Media Library uploads (incl.
-        // resized/thumbnail URLs) and plugin-bundled style images.
+        // Attach each item's style image for the admin copy. Works for every
+        // product type and image source: local files resolve to a path directly;
+        // anything else (CDN/rewritten/external URL) is downloaded as a fallback,
+        // so any fetchable image attaches.
         $admin_attachments = array();
+        $temp_attachment_files = array();
         $upload_dir = wp_upload_dir();
         if (!empty($basket_items) && is_array($basket_items)) {
             foreach ($basket_items as $bi) {
@@ -2147,7 +2149,7 @@ class Quotation_Form_Plugin {
                 $img_path = '';
 
                 // 1) Resolve via the Media Library (handles resized/CDN-rewritten URLs,
-                //    and returns the full-size file).
+                //    returns the full-size file).
                 if (function_exists('attachment_url_to_postid')) {
                     $att_id = attachment_url_to_postid($clean_url);
                     if ($att_id) {
@@ -2179,16 +2181,44 @@ class Quotation_Form_Plugin {
                         }
                     }
                 }
+                // 4) Fallback: download the image to a temp file with a proper name
+                //    so it always attaches regardless of how/where it is served.
+                if (!$img_path && (strpos($img_url, 'http://') === 0 || strpos($img_url, 'https://') === 0 || strpos($img_url, '//') === 0)) {
+                    $fetch_url = (strpos($img_url, '//') === 0) ? ('https:' . $img_url) : $img_url;
+                    if (!function_exists('download_url')) {
+                        require_once ABSPATH . 'wp-admin/includes/file.php';
+                    }
+                    $tmp = download_url($fetch_url, 10);
+                    if (!is_wp_error($tmp) && file_exists($tmp)) {
+                        $filename = sanitize_file_name(basename($clean_url));
+                        if (empty($filename) || !pathinfo($filename, PATHINFO_EXTENSION)) {
+                            $filename = 'style-image-' . substr(md5($img_url), 0, 8) . '.jpg';
+                        }
+                        $dest = trailingslashit(get_temp_dir()) . wp_unique_filename(get_temp_dir(), $filename);
+                        if (@copy($tmp, $dest)) {
+                            @unlink($tmp);
+                            $img_path = $dest;
+                        } else {
+                            $img_path = $tmp;
+                        }
+                        $temp_attachment_files[] = $img_path;
+                    }
+                }
 
                 if ($img_path && !in_array($img_path, $admin_attachments, true)) {
                     $admin_attachments[] = $img_path;
                 } elseif (!$img_path) {
-                    error_log('Quote email: could not resolve style image to a local file: ' . $img_url);
+                    error_log('Quote email: could not attach style image (unreachable): ' . $img_url);
                 }
             }
         }
 
         wp_mail($admin_email, $subject, $admin_html_message, $admin_headers, $admin_attachments);
+
+        // Clean up any downloaded temp files after the mail has been sent.
+        foreach ($temp_attachment_files as $tmp_file) {
+            @unlink($tmp_file);
+        }
 
         // Send confirmation email to customer (if enabled)
         $customer_email = isset($customer_data['email']) ? $customer_data['email'] :
