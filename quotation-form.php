@@ -2132,24 +2132,58 @@ class Quotation_Form_Plugin {
         $admin_html_message = '<div style="font-size:18px; line-height:1.5; font-family: Arial, Helvetica, sans-serif;">' . nl2br(esc_html($message)) . '</div>';
 
         // Attach each item's style image (local files only) for the admin copy.
-        // Works for every product type; resolves both Media Library uploads and
-        // plugin-bundled style images.
+        // Works for every product type; resolves Media Library uploads (incl.
+        // resized/thumbnail URLs) and plugin-bundled style images.
         $admin_attachments = array();
         $upload_dir = wp_upload_dir();
         if (!empty($basket_items) && is_array($basket_items)) {
             foreach ($basket_items as $bi) {
-                $img_url = isset($bi['styleImage']) ? $bi['styleImage'] : '';
+                $img_url = isset($bi['styleImage']) ? trim($bi['styleImage']) : '';
                 if (empty($img_url)) {
                     continue;
                 }
+                // Drop any query string / fragment before resolving.
+                $clean_url = preg_replace('/[?#].*$/', '', $img_url);
                 $img_path = '';
-                if (!empty($upload_dir['baseurl']) && strpos($img_url, $upload_dir['baseurl']) === 0) {
-                    $img_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $img_url);
-                } elseif (defined('QUOTATION_FORM_PLUGIN_URL') && defined('QUOTATION_FORM_PLUGIN_DIR') && strpos($img_url, QUOTATION_FORM_PLUGIN_URL) === 0) {
-                    $img_path = str_replace(QUOTATION_FORM_PLUGIN_URL, QUOTATION_FORM_PLUGIN_DIR, $img_url);
+
+                // 1) Resolve via the Media Library (handles resized/CDN-rewritten URLs,
+                //    and returns the full-size file).
+                if (function_exists('attachment_url_to_postid')) {
+                    $att_id = attachment_url_to_postid($clean_url);
+                    if ($att_id) {
+                        $p = get_attached_file($att_id);
+                        if ($p && file_exists($p)) {
+                            $img_path = $p;
+                        }
+                    }
                 }
-                if ($img_path && file_exists($img_path) && !in_array($img_path, $admin_attachments, true)) {
+                // 2) Uploads URL -> path (scheme-insensitive).
+                if (!$img_path && !empty($upload_dir['baseurl'])) {
+                    $base = preg_replace('#^https?:#', '', $upload_dir['baseurl']);
+                    $u = preg_replace('#^https?:#', '', $clean_url);
+                    if (strpos($u, $base) === 0) {
+                        $p = str_replace($base, $upload_dir['basedir'], $u);
+                        if (file_exists($p)) {
+                            $img_path = $p;
+                        }
+                    }
+                }
+                // 3) Plugin-bundled asset URL -> path.
+                if (!$img_path && defined('QUOTATION_FORM_PLUGIN_URL') && defined('QUOTATION_FORM_PLUGIN_DIR')) {
+                    $pbase = preg_replace('#^https?:#', '', QUOTATION_FORM_PLUGIN_URL);
+                    $u = preg_replace('#^https?:#', '', $clean_url);
+                    if (strpos($u, $pbase) === 0) {
+                        $p = str_replace($pbase, QUOTATION_FORM_PLUGIN_DIR, $u);
+                        if (file_exists($p)) {
+                            $img_path = $p;
+                        }
+                    }
+                }
+
+                if ($img_path && !in_array($img_path, $admin_attachments, true)) {
                     $admin_attachments[] = $img_path;
+                } elseif (!$img_path) {
+                    error_log('Quote email: could not resolve style image to a local file: ' . $img_url);
                 }
             }
         }
